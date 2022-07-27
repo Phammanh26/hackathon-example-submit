@@ -1,14 +1,11 @@
-from flask import Flask, request
-
+from flask import Flask, request, jsonify
+import config
 import settings
 from solver import ClassifyReviewSolver
 
-
-
-review_solver = ClassifyReviewSolver()
+review_solver = ClassifyReviewSolver(config)
 
 app = Flask(__name__)
-
 
 @app.get("/")
 def root():
@@ -17,10 +14,21 @@ def root():
 
 @app.get("/review-solver/solve")
 def solve():
+    RATING_ASPECTS = ["giai_tri", "luu_tru", "nha_hang", "an_uong", "di_chuyen", "mua_sam"]
+
     review_sentence = request.args.get('review_sentence')
-    result = review_solver.solve(review_sentence)
-    return {"result": result}
+    predict_results = review_solver.solve(review_sentence)
+
+    output = {
+        "review": review_sentence,
+        "results": {}
+      }
+    count = 0
+    for r in RATING_ASPECTS:
+        output["results"][r] = predict_results[count]
+        count += 1
+    return jsonify(output)
 
 
 if __name__ == '__main__':
-    app.run(host=settings.HOST, port=settings.PORT, debug=1)
+    app.run(host=settings.HOST, port=settings.PORT)

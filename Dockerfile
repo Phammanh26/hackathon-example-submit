@@ -1,11 +1,16 @@
 FROM python:3.9.13
 
-WORKDIR /trmanh29_hackathon
-COPY . /trmanh29_hackathon
+WORKDIR /manhpv3_tabai
+COPY requirements.txt /manhpv3_tabai
 
-# ENV GOOGLE_APPLICATION_CREDENTIALS=secret.json
 RUN pip install --upgrade pip
 RUN pip3 install --no-cache-dir -r requirements.txt
 
+RUN pip install gdown
+
+#STEP6: Download file weight
+RUN gdown "https://drive.google.com/uc?export=download&id=1VIplhJoaKPI08Qcdq6FhPk_dMvGOfDMp"
+
+COPY . /manhpv3_tabai
 RUN chmod +x run.sh
 CMD ./run.sh

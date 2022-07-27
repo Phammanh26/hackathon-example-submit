@@ -1,14 +1,12 @@
 from transformers import AutoModel
 from transformers import AutoTokenizer, AutoConfig
-
-import settings
 from processing import TextProcessing
 from model import ReviewClassifierModel
 
 
 class ClassifyReviewSolver:
-    def __init__(self):
-
+    def __init__(self, config):
+        self.config = config
         self.classify_model = None
         self.processing_text = None
         self.setup(bert_name='bert-base-multilingual-cased')
@@ -31,7 +29,7 @@ class ClassifyReviewSolver:
         self.processing_text = TextProcessing(tokenizer=tokenizer,
                                               max_length=300)
         self.classify_model = ReviewClassifierModel(base_model=base_model,
-                                                    model_path=settings.MODEL_PATH,
+                                                    model_path=self.config.MODEL_FILE_NAME,
                                                     num_labels=6)
 
     def solve(self, text):
